@@ -31,7 +31,7 @@ def customize_compiler_for_nvcc(self):
     subclassing going on."""
 
     # tell the compiler it can processes .cu
-    self.src_extensions.append('.cu')
+    # self.src_extensions.append('.cu')
 
     # save references to the default compiler_so and _comple methods
     default_compiler_so = self.compiler_so

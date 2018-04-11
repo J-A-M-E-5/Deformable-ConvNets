@@ -1,7 +1,6 @@
 import numpy as np
 
 from cpu_nms import cpu_nms
-from gpu_nms import gpu_nms
 
 
 def py_nms_wrapper(thresh):
@@ -24,6 +23,7 @@ def cpu_nms_wrapper(thresh):
 
 def gpu_nms_wrapper(thresh, device_id):
     def _nms(dets):
+        from gpu_nms import gpu_nms
         return gpu_nms(dets, thresh, device_id)
     return _nms
 

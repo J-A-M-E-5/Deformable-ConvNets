@@ -36,7 +36,7 @@ class ProposalOperator(mx.operator.CustomOp):
             print self._anchors
 
     def forward(self, is_train, req, in_data, out_data, aux):
-        nms = gpu_nms_wrapper(self._threshold, in_data[0].context.device_id)
+        nms = py_nms_wrapper(self._threshold)
 
         batch_size = in_data[0].shape[0]
         if batch_size > 1:

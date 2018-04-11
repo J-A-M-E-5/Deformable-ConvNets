@@ -36,6 +36,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Show Deformable ConvNets demo')
     # general
     parser.add_argument('--rfcn_only', help='whether use R-FCN only (w/o Deformable ConvNets)', default=False, action='store_true')
+    parser.add_argument('--cpu_only', help='whether use CPU mode)', default=False, action='store_true')
 
     args = parser.parse_args()
     return args
@@ -83,11 +84,18 @@ def main():
     provide_data = [[(k, v.shape) for k, v in zip(data_names, data[i])] for i in xrange(len(data))]
     provide_label = [None for i in xrange(len(data))]
     arg_params, aux_params = load_param(cur_path + '/../model/' + ('rfcn_dcn_coco' if not args.rfcn_only else 'rfcn_coco'), 0, process=True)
+
+    context = [mx.cpu()] if args.cpu_only else context = [mx.gpu(0)]
+
     predictor = Predictor(sym, data_names, label_names,
-                          context=[mx.gpu(0)], max_data_shapes=max_data_shape,
+                          context=context, max_data_shapes=max_data_shape,
                           provide_data=provide_data, provide_label=provide_label,
                           arg_params=arg_params, aux_params=aux_params)
-    nms = gpu_nms_wrapper(config.TEST.NMS, 0)
+
+    if args.cpu_only:
+        nms = py_nms_wrapper(config.TEST.NMS)
+    else:
+        nms = gpu_nms_wrapper(config.TEST.NMS, 0)
 
     # warm up
     for j in xrange(2):
