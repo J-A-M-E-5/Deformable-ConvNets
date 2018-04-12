@@ -85,7 +85,7 @@ def main():
     provide_label = [None for i in xrange(len(data))]
     arg_params, aux_params = load_param(cur_path + '/../model/' + ('rfcn_dcn_coco' if not args.rfcn_only else 'rfcn_coco'), 0, process=True)
 
-    context = [mx.cpu()] if args.cpu_only else context = [mx.gpu(0)]
+    context = [mx.cpu()] if args.cpu_only else [mx.gpu(0)]
 
     predictor = Predictor(sym, data_names, label_names,
                           context=context, max_data_shapes=max_data_shape,
